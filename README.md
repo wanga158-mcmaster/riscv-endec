@@ -29,7 +29,7 @@ Create an input file `IN.txt` with RISC-V instructions, one per line:
 addi x0,x0,0
 add x3,x3,x3
 lw x1,4(x2)
-beq x1,x2,label
+lui x22,2222
 ```
 
 ### Compilation

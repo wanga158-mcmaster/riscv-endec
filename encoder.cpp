@@ -16,6 +16,7 @@ add x3,x3,x3
 
 time complexity is o(n) where n is length of instruction string,
 but the constant factor could be improved (by a lot)
+todo: change fmt, op_type to enums
 
 */
 
