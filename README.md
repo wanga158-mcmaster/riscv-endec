@@ -26,10 +26,10 @@ Create an input file `IN.txt` with RISC-V instructions, one per line:
 
 
 ```assembly
-addi x0,x0,0
-add x3,x3,x3
-lw x1,4(x2)
-lui x22,2222
+sub x7,x8,x9
+srl x3,x4,x5
+sb x10,20(x11)
+slli x20,x21,24
 ```
 
 ### Compilation
@@ -48,6 +48,14 @@ g++ -std=c++20 -o encoder encoder.cpp
 
 The encoded instructions will be stored in `OUT.txt`
 
+### Example Output
+
+```
+01000000100101000000001110110011 // subtract
+00000000010100100101000110110011 // shift right logical
+00000000101001011000101000100011 // store byte
+00000001100010101001101000010011 // shift left logical immediate
+```
 
 ## Some Limitations
 
