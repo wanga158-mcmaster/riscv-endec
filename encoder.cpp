@@ -27,8 +27,8 @@ unordered_map<string, string> funct3s;
 unordered_map<string, string> funct7s;
 vector<int> commas, parens[2]; // parens[0] -> open parenthesis, parens[1] -> close parenthesis
 string cur_op, cur_op_type, cur_fmt, cur_opcode, cur_funct3, cur_funct7;
-string cur_rd, cur_rs1, cur_rs2;
-string cur_decoded_op;
+string cur_rd, cur_rs1, cur_rs2, cur_imm;
+string cur_encoded_op;
 int reg1, reg2, reg3, imm;
 
 vector<int> ans;
@@ -300,6 +300,9 @@ void setup_all_funct7s() {
     setup_funct7("sra", "0100000");
     setup_funct7("slt", "0000000");
     setup_funct7("sltu", "0000000");
+    setup_funct7("slli", "0000000");
+    setup_funct7("srli", "0000000");
+    setup_funct7("srai", "0100000");
 }
 
 void get_instr() {
@@ -310,7 +313,6 @@ void get_instr() {
     } // get instruction
     // remove instruction from operation
     instr = instr.substr(ind + 1);
-    cout << instr << " \n";
     // addi_x0,x0,0
     //     ^
     //     |
@@ -355,14 +357,29 @@ void get_ri() { // instructions with reg,imm
     imm = stoi(instr.substr(commas[0] + 1));
 }
 
+string reg_conv(int a) {
+    return bitset<5>(a).to_string();
+}
+
+string imm_13_conv(int a) {
+    return bitset<13>(a).to_string();
+}
+
+string imm_21_conv(int a) {
+    return bitset<21>(a).to_string();
+}
+
 int main()
 {
+
     ifstream _IN("IN.txt");
     ofstream _OUT("OUT.txt");
 
     setup_all_fmts();
     setup_all_op_types();
     setup_all_opcodes();
+    setup_all_funct3s();
+    setup_all_funct7s();
     
     while (getline(_IN, instr)) {
         /* get operation */
@@ -383,18 +400,41 @@ int main()
             get_ri();
         }
         if (cur_fmt == "r_type") {
-
+            cur_rs2 = reg_conv(reg3);
+            cur_rs1 = reg_conv(reg2);
+            cur_rd = reg_conv(reg1);
+            cur_encoded_op = cur_funct7 + cur_rs2 + cur_rs1 + cur_funct3 + cur_rd;
         } else if (cur_fmt == "i_type") {
-
+            cur_imm = imm_13_conv(imm);
+            cur_rs1 = reg_conv(reg2);
+            cur_rd = reg_conv(reg1);
+            cur_encoded_op = cur_imm.substr(1, 12) + cur_rs1 + cur_funct3 + cur_rd;
         } else if (cur_fmt == "s_type") {
-
+            cur_imm = imm_13_conv(imm);
+            cur_rs2 = reg_conv(reg1);
+            cur_rs1 = reg_conv(reg2);
+            cur_encoded_op = cur_imm.substr(1, 7) + cur_rs2 + cur_rs1 + cur_funct3 + cur_imm.substr(8, 5);
+            if (cur_op == "slli" || cur_op == "srli" || cur_op == "srai") {
+                cur_encoded_op = cur_funct7 + cur_encoded_op.substr(7);
+            }
         } else if (cur_fmt == "b_type") {
-
+            cur_imm = imm_13_conv(imm);
+            cur_rs2 = reg_conv(reg2);
+            cur_rs1 = reg_conv(reg1);
+            cur_encoded_op = cur_imm.substr(0, 1) + cur_imm.substr(2, 6) + cur_rs2 + cur_rs1 + cur_funct3 
+            + cur_imm.substr(8, 4) + cur_imm.substr(1, 1);
         } else if (cur_fmt == "u_type") {
-            
+            cur_imm = imm_21_conv(imm);
+            cur_rd = reg_conv(reg1);
+            cur_encoded_op = cur_imm.substr(1) + cur_rd;
         } else if (cur_fmt == "j_type") {
-
+            cur_imm = imm_21_conv(imm);
+            cur_rd = reg_conv(reg1);
+            cur_encoded_op = cur_imm.substr(0, 1) + cur_imm.substr(10, 10) + cur_imm.substr(9, 1) + cur_imm.substr(1, 8) + cur_rd;
         }
+        cur_encoded_op = cur_encoded_op + cur_opcode;
+        assert(cur_encoded_op.length() == 32);
+        _OUT << cur_encoded_op << "\n";
     }
     assert(_IN.eof());
     return 0;
