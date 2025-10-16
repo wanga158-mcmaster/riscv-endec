@@ -1,6 +1,6 @@
 # endec
 
-A C++ implementation of a RISC-V instruction decoder that converts assembly instructions into their corresponding machine code representations.
+A C++ implementation of a RISC-V instruction encoder/decoder that converts assembly instructions into their corresponding machine code representations.
 
 ## Supported Instructions
 
