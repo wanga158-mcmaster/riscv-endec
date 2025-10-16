@@ -56,4 +56,4 @@ The program itself has also not gone through rigorous testing, so there may stil
 
 ## Some notes
 
-I decided to make my own encoder after finding only a few available online. The one I did find immediiately (https://luplab.gitlab.io/rvcodecjs/) was written in javascript and only usable as a website; it has a nice design, but I wished for a script able to encode/decode multiple instructions at once and on the command line. I'll add on more instructions if I see fit.
+I decided to make my own encoder after finding only a few available online. The one I did find immediately (https://luplab.gitlab.io/rvcodecjs/) was written in javascript and only usable as a website; it has a nice design, but I wished for a script able to encode/decode multiple instructions at once and on the command line. I'll add on more instructions if I see fit.
